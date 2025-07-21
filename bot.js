@@ -4,8 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 
-// ✅ URL do Webhook do n8n para enviar os resultados (produção)
-const WEBHOOK_N8N = 'https://jallin-n8n.yqt2oi.easypanel.host/webhook-test/botresultados';
+// ✅ URL do Webhook do n8n para enviar os resultados
+const WEBHOOK_N8N = 'https://jallin-n8n.yqt2oi.easypanel.host/webhook/botresultados';
 
 // Funções auxiliares
 function limparURL(url) {
@@ -137,9 +137,7 @@ async function rodarBot() {
   const falhas = fs.readFileSync('falhas.txt','utf8').split(/\r?\n/).filter(Boolean);
 
   try {
-    await axios.post(WEBHOOK_N8N, { urls, sucessos, falhas }, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    await axios.post(WEBHOOK_N8N, { urls, sucessos, falhas });
     console.log('✅ Dados enviados ao n8n');
   } catch(e) {
     console.error('⚠️ Falha ao enviar dados ao n8n:', e.message);
@@ -153,14 +151,25 @@ rodarBot();
 const app = express();
 app.use(bodyParser.json());
 
-// Atualizar links.txt via webhook
-app.post('/update-links', (req, res) => {
+// Atualizar links.txt via webhook e rodar o bot em seguida
+app.post('/update-links', async (req, res) => {
   if (!req.body.links || !Array.isArray(req.body.links)) {
     return res.status(400).json({ error: 'Envie um array links' });
   }
+
   fs.writeFileSync('links.txt', req.body.links.join('\n'));
   console.log('✅ links.txt atualizado via webhook');
+
   res.json({ status: 'ok' });
+
+  // 🚀 após responder, roda o bot
+  try {
+    console.log('🔄 Iniciando coleta automaticamente após atualização de links...');
+    await rodarBot();
+    console.log('✅ Coleta concluída após atualização!');
+  } catch (err) {
+    console.error('❌ Erro ao rodar bot automaticamente:', err.message);
+  }
 });
 
 // Obter todos os dados
