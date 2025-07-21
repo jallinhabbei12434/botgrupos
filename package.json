@@ -1,14 +1,14 @@
 {
   "name": "botwhatsapp",
   "version": "1.0.0",
-  "description": "Bot WhatsApp usando Playwright",
   "main": "bot.js",
   "scripts": {
     "start": "npm install && npx playwright install && node bot.js"
   },
-  "author": "",
-  "license": "ISC",
-"dependencies": {
-  "playwright": "1.46.1"
+  "dependencies": {
+    "playwright": "1.46.1",
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "axios": "^1.6.7"
   }
 }
