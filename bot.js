@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 
 // ✅ URL do Webhook do n8n para enviar os resultados (produção)
-const WEBHOOK_N8N = 'https://jallin-n8n.yqt2oi.easypanel.host/webhook/botresultados';
+const WEBHOOK_N8N = 'https://jallin-n8n.yqt2oi.easypanel.host/webhook-test/botresultados';
 
 // Funções auxiliares
 function limparURL(url) {
