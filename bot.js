@@ -4,8 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 
-// ✅ URL do Webhook do n8n para enviar os resultados
-const WEBHOOK_N8N = 'https://jallin-n8n.yqt2oi.easypanel.host/webhook-test/botresultados';
+// ✅ URL do Webhook do n8n para enviar os resultados (produção)
+const WEBHOOK_N8N = 'https://jallin-n8n.yqt2oi.easypanel.host/webhook/botresultados';
 
 // Funções auxiliares
 function limparURL(url) {
@@ -137,7 +137,9 @@ async function rodarBot() {
   const falhas = fs.readFileSync('falhas.txt','utf8').split(/\r?\n/).filter(Boolean);
 
   try {
-    await axios.post(WEBHOOK_N8N, { urls, sucessos, falhas });
+    await axios.post(WEBHOOK_N8N, { urls, sucessos, falhas }, {
+      headers: { 'Content-Type': 'application/json' }
+    });
     console.log('✅ Dados enviados ao n8n');
   } catch(e) {
     console.error('⚠️ Falha ao enviar dados ao n8n:', e.message);
