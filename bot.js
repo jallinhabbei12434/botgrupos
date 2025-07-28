@@ -151,7 +151,6 @@ rodarBot();
 const app = express();
 app.use(bodyParser.json());
 
-// Atualizar links.txt via webhook e rodar o bot em seguida
 app.post('/update-links', async (req, res) => {
   if (!req.body.links || !Array.isArray(req.body.links)) {
     return res.status(400).json({ error: 'Envie um array links' });
@@ -162,7 +161,6 @@ app.post('/update-links', async (req, res) => {
 
   res.json({ status: 'ok' });
 
-  // 🚀 após responder, roda o bot
   try {
     console.log('🔄 Iniciando coleta automaticamente após atualização de links...');
     await rodarBot();
@@ -172,7 +170,6 @@ app.post('/update-links', async (req, res) => {
   }
 });
 
-// Obter todos os dados
 app.get('/get-all', (req, res) => {
   const urls = fs.readFileSync('urls.txt','utf8').split(/\r?\n/).filter(Boolean);
   const sucessos = fs.readFileSync('sucessos.txt','utf8').split(/\r?\n/).filter(Boolean);
